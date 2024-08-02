@@ -6,6 +6,7 @@ import com.devstack.ecom.Upscale.util.StandardResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<StandardResponse>  createCustomer(@RequestBody RequestCustomerDto dto){
         System.out.println(dto);
         System.out.println(dto.getAddress());
@@ -30,6 +32,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('*')")
     public ResponseEntity<StandardResponse> getById(@PathVariable String id){
         return new ResponseEntity<>(
                 new StandardResponse(200,"Customer data!..",customerService.findById(id)),
@@ -38,6 +41,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<StandardResponse> updateCustomer(@PathVariable String id ,@RequestBody RequestCustomerDto dto){
         customerService.update(id,dto);
         return new ResponseEntity<>(
@@ -48,6 +52,7 @@ public class CustomerController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasAnyRole('*')")
     public ResponseEntity<StandardResponse> findAllCustomer(
             @RequestParam String searchText,
             @RequestParam int page,
@@ -62,6 +67,7 @@ public class CustomerController {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<StandardResponse> deleteCustomer(@PathVariable String id){
         customerService.delete(id);
         return new ResponseEntity<>(
